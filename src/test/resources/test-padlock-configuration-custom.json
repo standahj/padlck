@@ -1,0 +1,13 @@
+{
+  "accessType": "CUSTOM",
+  "instanceType": {
+    "type": "com.cleverthis.interview.domain.PadlockImplDelegate",
+    "value": {
+      "type": "com.cleverthis.interview.padlock.PadlockImpl",
+      "value": {
+        "type": "int",
+        "literal": "6"
+      }
+    }
+  }
+}
