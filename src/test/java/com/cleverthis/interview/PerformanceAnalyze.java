@@ -6,9 +6,6 @@ import com.cleverthis.interview.padlock.PadlockImpl;
  * Performance test but not mean to run in unit test.
  */
 public class PerformanceAnalyze {
-    private static void solve(PadlockImpl padlock) {
-        new Solution().solve(padlock);
-    }
 
     private static final int TOTAL_RUN = 500;
     private static final int NUMPAD_SIZE = 9;
@@ -19,6 +16,14 @@ public class PerformanceAnalyze {
     }
 
     public static void main(String[] args) {
+        new PerformanceAnalyze().analyze(args);
+    }
+
+    private void solve(PadlockImpl padlock) {
+        new Solution().solve(padlock);
+    }
+
+    private void analyze(String... args) {
         long timeSum = 0;
         long writeSum = 0;
         for (int i = 0; i < TOTAL_RUN; i++) {

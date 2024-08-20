@@ -29,8 +29,8 @@ class PadlockImplDelegateTest {
         this.delegate.writeInputBuffer(1, 1);
         this.delegate.writeInputBuffer(2, 2);
         // then
-        assertEquals(3, this.delegate.getWriteCounter());
-        assertEquals(0, this.delegate.getCheckCounter());
+        assertEquals(3, this.delegate.getWriteCounter(), "Write counter check");
+        assertEquals(0, this.delegate.getCheckCounter(), "Check counter test");
     }
 
     @Test
@@ -42,8 +42,8 @@ class PadlockImplDelegateTest {
         // when
         boolean test = this.delegate.isPasscodeCorrect();
         // then
-        assertEquals(this.keypadSize, this.delegate.getWriteCounter());
-        assertEquals(1, this.delegate.getCheckCounter());
+        assertEquals(this.keypadSize, this.delegate.getWriteCounter(), "Write counter check");
+        assertEquals(1, this.delegate.getCheckCounter(), "Check counter test");
     }
 
     @Test
@@ -53,7 +53,7 @@ class PadlockImplDelegateTest {
             this.delegate.writeInputBuffer(i, i);
         }
         // then
-        assertEquals(this.keypadSize, this.delegate.getWriteCounter());
+        assertEquals(this.keypadSize, this.delegate.getWriteCounter(), "Write counter check");
     }
 
     @Test
@@ -63,9 +63,9 @@ class PadlockImplDelegateTest {
             this.delegate.writeInputBuffer(i, i);
         }
         // when
-        boolean test = this.delegate.isPasscodeCorrect();
+        this.delegate.isPasscodeCorrect();
         // then
-        assertEquals(1, this.delegate.getCheckCounter());
+        assertEquals(1, this.delegate.getCheckCounter(), "Check counter test");
     }
 
     @Test
@@ -75,10 +75,10 @@ class PadlockImplDelegateTest {
             this.delegate.writeInputBuffer(i, i);
         }
         // when
-        boolean test = this.delegate.isPasscodeCorrect();
+        this.delegate.isPasscodeCorrect();
         this.delegate.resetCounter();
         // then
-        assertEquals(0, this.delegate.getWriteCounter());
-        assertEquals(0, this.delegate.getCheckCounter());
+        assertEquals(0, this.delegate.getWriteCounter(), "Write counter check");
+        assertEquals(0, this.delegate.getCheckCounter(), "Check counter test");
     }
 }

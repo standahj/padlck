@@ -1,7 +1,12 @@
 import java.io.FileOutputStream
+import com.github.spotbugs.snom.Effort
+import com.github.spotbugs.snom.Confidence
+import com.github.spotbugs.snom.SpotBugsTask
 
 plugins {
     id("java")
+    id("com.github.spotbugs") version "6.0.20"
+    id("pmd")
 }
 
 group = "com.cleverthis.interview"
@@ -42,4 +47,38 @@ tasks.named<JavaExec>("runPerformanceAnalyze") {
     mainClass.set("com.cleverthis.interview.PerformanceAnalyze")
     jvmArgs("-Dfast=true")
     standardOutput = FileOutputStream("performance.txt")
+}
+
+spotbugs {
+    toolVersion = "4.8.6"
+    effort.set(Effort.MAX)
+    reportLevel.set(Confidence.HIGH)
+}
+
+tasks.withType<com.github.spotbugs.snom.SpotBugsTask> {
+    reports {
+        create("html") {
+            required.set(true)
+        }
+        create("xml") {
+            required.set(false)
+        }
+    }
+}
+
+pmd {
+    toolVersion = "7.4.0"
+    ruleSetFiles = files("config/pmd/custom-rules.xml")
+    ruleSets = listOf("category/java/bestpractices.xml", "category/java/design.xml")
+}
+
+tasks.withType<Pmd> {
+    reports {
+        xml.required.set(false)
+        html.required.set(true)
+    }
+}
+// Disable the pmdTest task as there are rules failing on use of System.out.println in he PerformanceAnalyze code
+tasks.named("pmdTest").configure {
+    enabled = false
 }

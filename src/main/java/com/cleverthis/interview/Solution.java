@@ -12,9 +12,11 @@ public class Solution {
 
     /**
      * Solve the padlock setting from initialized Java padlock.
-     * @param padlock  the Java padlock
+     *
+     * @param padlock the Java padlock
      */
     public void solve(PadlockImpl padlock) {
-        new PadlockCracker(new PadlockImplDelegate(padlock)).crackPadlock();
+        // apply the minimalistic version of the solution
+        new PadlockCracker(new PadlockImplDelegate(padlock)).execute();
     }
 }

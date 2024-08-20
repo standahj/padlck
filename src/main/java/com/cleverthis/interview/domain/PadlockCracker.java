@@ -1,10 +1,10 @@
 package com.cleverthis.interview.domain;
 
-import java.util.Arrays;
-
 /**
- * Implement the padlock cracking mechanism.
- * It can run as single thread or as multithreaded.
+ * Implement the padlock cracking mechanism using brute force method (test all possible combinations sequentially).
+ * It runs as single thread, but theoretically brute force algorithm may be parallelized by splitting the possible key/combination domain
+ * to multiple threads. However, the PadlockImpl is not suitable for parallel execution, thus multithreaded solution
+ * does not exist.
  */
 public class PadlockCracker {
 
@@ -18,14 +18,15 @@ public class PadlockCracker {
      * @param padlock the Padlock implementation accessor instance
      */
     public PadlockCracker(IPadlock padlock) {
-        this(padlock,  0, padlock.getNumpadSize());
+        this(padlock, 0, padlock.getNumpadSize());
     }
 
     /**
      * Instantiate the algorithm instance, intended for eventual parallel execution (which is not feasible with current PadlockImpl).
+     *
      * @param padlock - the padlock accessor representing the 'physical' padlock
-     * @param start - in single-threaded case, shall be 0, in multithreaded case - shall be the start index for the first digit
-     * @param end - in single-threaded case, shall be 10, in multithreaded case - shall be the end index for the first digit
+     * @param start   - in single-threaded case, shall be 0, in multithreaded case - shall be the start index for the first digit
+     * @param end     - in single-threaded case, shall be 10, in multithreaded case - shall be the end index for the first digit
      */
     private PadlockCracker(IPadlock padlock, int start, int end) {
         this.padlock = padlock;
@@ -41,33 +42,35 @@ public class PadlockCracker {
      *
      * @return - valid padlock combination or null if no such combination was found.
      */
-    public int[] crackPadlock() {
+    public int[] execute() {
         final int numpadSize = this.padlock.getNumpadSize();
 
         // Create an array with the digits applicable for our padlock
         // Assume we can choose a digit in range 0-9, unless the keypad size is larger than 10
         final int numDigits = Math.max(numpadSize, 10);
-        final int[] applicableDigits = new int[numDigits+1];
-        for (int i = 0; i <= numDigits ; i++) {
+        final int[] applicableDigits = new int[numDigits + 1];
+        for (int i = 0; i <= numDigits; i++) {
             applicableDigits[i] = i;
         }
 
         // Generate permutations of the numbers
-        final boolean[] applied = new boolean[numDigits+1];
+        final boolean[] applied = new boolean[numDigits + 1];
         final int[] currentPermutation = new int[numpadSize];
 
+        // recursively try all available combination (brute force)
         return backtrack(applicableDigits, applied, currentPermutation, this.padlock, 0, this.start, this.end);
     }
 
     /**
      * Recursive num-pad incrementing, allows to explore each combination at given depth, and all permutations on lower depth.
-     * @param applicableDigits array with digits to use
-     * @param applied             flag to indicate that the digit and all permutations of following digits were already explored
-     * @param currentPermutation  stores current permutation to be tested with the padlock
-     * @param padlock             padlock accessor
-     * @param depth               current depth (at which digit we iterate)
-     * @param start               start range for the iteration (supplied from invoker for depth 0, otherwise 0)
-     * @param end                 end range for the iteration  (supplied from invoker for depth 0, otherwise num of applicable digits)
+     *
+     * @param applicableDigits   array with digits to use
+     * @param applied            flag to indicate that the digit and all permutations of following digits were already explored
+     * @param currentPermutation stores current permutation to be tested with the padlock
+     * @param padlock            padlock accessor
+     * @param depth              current depth (at which digit we iterate)
+     * @param start              start range for the iteration (supplied from invoker for depth 0, otherwise 0)
+     * @param end                end range for the iteration  (supplied from invoker for depth 0, otherwise num of applicable digits)
      * @return the correct permutation or null if permutation was rejected by the padlock
      */
     private int[] backtrack(final int[] applicableDigits,
@@ -82,12 +85,13 @@ public class PadlockCracker {
         if (depth == currentPermutation.length) {
             // The currentPermutation is now a complete input candidate
             if (padlock.isPasscodeCorrect()) {
-                System.out.println("YES, We cracked the code: " + Arrays.toString(currentPermutation));
+                // System.out.println("YES, We cracked the code: " + Arrays.toString(currentPermutation));
                 return currentPermutation;
             }
             return null;
         }
 
+        // iterate over all digits on the current position (value of 'depth' variable) and on all subsequent positions
         for (int i = start; i < end && i < padlock.getNumpadSize() && !done; i++) {
             if (!applied[i]) {
                 applied[i] = true;
